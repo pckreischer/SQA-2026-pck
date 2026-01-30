@@ -34,6 +34,7 @@ Security weaknesses can be identified using two ways: manual inspection by an ex
   - Run Bandit by specifying the extracted directory. You might need the `-a`, `-f`, `-r`, and the `-o` flag 
   - Observe the security weaknesses 
 - Report the name of the three most frequent security weaknesses detected by Bandit in a document 
-- Upload the document on Assignment 2 @ CANVAS  
+- Upload the document on Assignment 2 @ CANVAS
+- Due: Feb 6, 2026
 
 - Due: Feb 16, 2025
