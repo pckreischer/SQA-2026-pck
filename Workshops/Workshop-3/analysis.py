@@ -27,8 +27,8 @@ def getBinOpDetails(assiTarget, assiValue, element_type = 'SINGLE_ASSIGNMENT' ):
             if(isinstance( op_ , ast.Name ) ):
                 rhs_var = rhs_var + "," + op_.id 
                 # print("Operand:" + op_.id ) 
-    elif isinstance(assiValue, ast.Num):
-        rhs_var = assiValue.n 
+    elif isinstance(assiValue, ast.Constant):  # Python 3.8+ uses ast.Constant instead of ast.Num
+        rhs_var = assiValue.value
     if len(lhs_var) > 0:
         var_assignment_list = [( lhs_var, rhs_var , element_type  ) ]
     return var_assignment_list
@@ -53,10 +53,12 @@ def getTupAssiDetails(assiTargets, assiValue, element_type = 'TUPLE_ASSIGNMENT' 
             for x_ in range(len(name_var_ls)):
                 name, value = name_var_ls[x_] , value_var_ls[x_] 
                 var_name, var_value = '', '' 
-                if isinstance( value, ast.Num ):
-                    var_value =  value.n 
+                if isinstance(value, ast.Constant):  # Python 3.8+: handles numbers, strings, etc.
+                    var_value = value.value
+                elif isinstance(value, ast.Name):      # Variable reference, e.g., val1 = input1
+                    var_value = value.id
                 else:
-                    var_value =  value.s 
+                    var_value = ''
                 if isinstance(name, ast.Name):
                     var_name = name.id 
                 var_assignment_list.append( (var_name, var_value, element_type) )
@@ -170,10 +172,57 @@ def getFunctionDefinitions(path2program):
     return call_sequence_ls, func_var_list 
 
 
-def trackTaint(val2track, df_list_param): 
+def trackTaint(val2track, df_list_param):
+    # Unpack the four DataFrames: variable assignments, function calls,
+    # function definitions (parameters), and function-internal variable assignments
     var_, call_, func_def, func_var = df_list_param[0], df_list_param[1], df_list_param[2], df_list_param[3]
-    
-    #TODO: Complete this method so that the output is 1000->val1->v1->res  
+
+    # Initialize the taint path with the starting tainted value (e.g., 1000)
+    taint_path = [str(val2track)]
+    current_taint = str(val2track)
+
+    # Step 1: Find the variable directly assigned the tainted value
+    # e.g., input1 = 1000  =>  current_taint becomes 'input1'
+    step1 = var_[var_['RHS'].astype(str) == current_taint]
+    if not step1.empty:
+        current_taint = step1.iloc[0]['LHS']
+        taint_path.append(current_taint)
+
+    # Step 2: Find where that variable propagates via a subsequent assignment
+    # e.g., val1, val2, op = input1, 5, '*'  =>  current_taint becomes 'val1'
+    step2 = var_[var_['RHS'].astype(str) == current_taint]
+    if not step2.empty:
+        current_taint = step2.iloc[0]['LHS']
+        taint_path.append(current_taint)
+
+    # Step 3: Find the function call that passes the tainted variable as an argument
+    # then map the argument position to the matching formal parameter in the function definition
+    # e.g., simpleCalculator(val1, ...) at position 1  =>  v1 (FUNC_DEFI:1)
+    call_match = call_[call_['ARG_NAME'] == current_taint]
+    if not call_match.empty:
+        func_name  = call_match.iloc[0]['FUNC_NAME']
+        arg_index  = call_match.iloc[0]['TYPE'].split(':')[1]  # e.g., 'FUNC_CALL_ARG:1' => '1'
+        # Select the formal parameter at that position in the function definition
+        param_match = func_def[
+            (func_def['FUNC_NAME'] == func_name) &
+            (func_def['TYPE'] == 'FUNC_DEFI:' + arg_index)
+        ]
+        if not param_match.empty:
+            current_taint = param_match.iloc[0]['ARG_NAME']
+            taint_path.append(current_taint)
+
+    # Step 4: Find where the tainted parameter is used inside the function body
+    # e.g., res = v1 * v2  =>  current_taint becomes 'res'
+    # Use regex word-boundary to avoid partial matches (e.g., 'v1' must not match 'v12')
+    func_var_match = func_var[
+        func_var['RHS'].astype(str).str.contains(r'\b' + current_taint + r'\b', na=False, regex=True)
+    ]
+    if not func_var_match.empty:
+        current_taint = func_var_match.iloc[0]['LHS']
+        taint_path.append(current_taint)
+
+    # Print the complete taint propagation path
+    print('->'.join(taint_path))
     
 
 
