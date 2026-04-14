@@ -27,7 +27,7 @@ def getBinOpDetails(assiTarget, assiValue, element_type = 'SINGLE_ASSIGNMENT' ):
             if(isinstance( op_ , ast.Name ) ):
                 rhs_var = rhs_var + "," + op_.id 
                 # print("Operand:" + op_.id ) 
-    elif isinstance(assiValue, ast.Constant):  # Python 3.8+ uses ast.Constant instead of ast.Num
+    elif isinstance(assiValue, ast.Constant):  
         rhs_var = assiValue.value
     if len(lhs_var) > 0:
         var_assignment_list = [( lhs_var, rhs_var , element_type  ) ]
