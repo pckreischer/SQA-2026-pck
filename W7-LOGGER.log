@@ -1,0 +1,25 @@
+2026-04-13 21:10:36,434:[readData] Dataset loaded — component: iris dataset, shape: (150, 4), null_count: 0, status: OK
+2026-04-13 21:10:36,436:[makePrediction] Prediction requested — component: KNN classifier, input_samples: [[5.9, 1.0, 5.1, 1.8], [3.4, 2.0, 1.1, 4.8]], n_neighbors: 6
+2026-04-13 21:10:36,438:[makePrediction] Prediction completed — component: KNN classifier, predictions: [1, 1], status: OK
+2026-04-13 21:10:36,441:[doRegression] Dataset split — component: diabetes dataset, train_size: 422, test_size: 20, status: OK
+2026-04-13 21:10:36,450:[doRegression] Regression evaluation — component: LinearRegression, MSE: 2548.0724, status: OK
+2026-04-13 21:10:51,662:[readData] Dataset loaded — component: iris dataset, shape: (150, 4), null_count: 0, status: OK
+2026-04-13 21:10:51,664:[makePrediction] Prediction requested — component: KNN classifier, input_samples: [[5.9, 1.0, 5.1, 1.8], [3.4, 2.0, 1.1, 4.8]], n_neighbors: 6
+2026-04-13 21:10:51,666:[makePrediction] Prediction completed — component: KNN classifier, predictions: [1, 1], status: OK
+2026-04-13 21:10:51,668:[doRegression] Dataset split — component: diabetes dataset, train_size: 422, test_size: 20, status: OK
+2026-04-13 21:10:51,669:[doRegression] Regression evaluation — component: LinearRegression, MSE: 2548.0724, status: OK
+2026-04-13 21:11:02,994:[k_fold_cv_mlp] Dataset loaded — component: iris dataset (k-fold CV), shape: (150, 4), null_count: 0, n_splits: 2, status: OK
+2026-04-13 21:11:03,382:[k_fold_cv_mlp] CV complete — component: MLPClassifier, fold_scores: [0.2933, 0.3333], mean_accuracy: 0.3133, status: WARNING: low mean accuracy — possible model tricking
+2026-04-13 21:11:09,022:[doDeepLearning] Dataset loaded — component: MNIST dataset, train_shape: (60000, 28, 28), test_shape: (10000, 28, 28), unique_train_labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], status: OK
+2026-04-13 21:11:35,603:[doDeepLearning] Training complete — component: CNN (Sequential), final_train_accuracy: 0.9625, final_val_accuracy: 0.9649, status: OK
+2026-04-13 21:11:35,713:[doDeepLearning] Sample predictions — component: CNN (Sequential), predicted: [7, 2, 1, 0, 4], actual: [7, 2, 1, 0, 4], status: OK
+2026-04-13 21:18:48,317:readData: loaded iris dataset, shape=(150, 4), nulls=0
+2026-04-13 21:18:48,319:makePrediction: input samples = [[5.9, 1.0, 5.1, 1.8], [3.4, 2.0, 1.1, 4.8]]
+2026-04-13 21:18:48,323:makePrediction: knn predicted [1, 1]
+2026-04-13 21:18:48,325:doRegression: diabetes dataset - train size=422, test size=20
+2026-04-13 21:18:48,336:doRegression: MSE=2548.0724 - looks normal
+2026-04-13 21:18:50,846:k_fold_cv_mlp: iris data loaded for CV, shape=(150, 4), nulls=0, n_splits=2
+2026-04-13 21:18:51,233:k_fold_cv_mlp: CV done - scores=[0.2933, 0.3333], mean_accuracy=0.3133 - WARNING low accuracy, possible model tricking
+2026-04-13 21:18:51,534:doDeepLearning: MNIST loaded - train=(60000, 28, 28), test=(10000, 28, 28), unique labels=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+2026-04-13 21:19:32,641:doDeepLearning: training done - train_acc=0.9653, val_acc=0.9684 - OK
+2026-04-13 21:19:32,835:doDeepLearning: predicted=[7, 2, 1, 0, 4], actual=[7, 2, 1, 0, 4] - match
